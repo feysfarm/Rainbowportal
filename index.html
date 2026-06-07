@@ -51,6 +51,35 @@
   transform: scale(0.92); /* Shrinks slightly within its transparent bounds */
 }
 
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #fff; /* White base */
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  pointer-events: none; /* Crucial: so sparkles don't block user touches */
+  z-index: 1000;
+  
+  /* Give it a magical glow */
+  box-shadow: 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ff8c00;
+  
+  /* Hook up the animation */
+  animation: explode 0.6s ease-out forwards;
+}
+
+/* The Burst Animation */
+@keyframes explode {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    /* These CSS variables (--tx, --ty) will be set randomly by JavaScript */
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
     /* 4. The Curved Positions */
     .btn-1 { top: 20%; left: 10%; }
     .btn-2 { top: 35%; left: 25%; }
@@ -62,8 +91,75 @@
   <div class="phone-container">
     <img src="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg" class="bg-image" alt="Background">
     
-    <button class="custom-btn btn-1"><div class="btn-visual">LED</div></button> 
+    <button class="custom-btn btn-1" id="testbtn"><div class="btn-visual">LED</div></button> 
   </div>
-
 </body>
+<script>
+function createSparkles(button) {
+  const sparkleCount = 8; // Number of sparkles per click
+
+  for (let i = 0; i < sparkleCount; i++) {
+    const sparkle = document.createElement('span');
+    sparkle.classList.add('sparkle');
+
+    // Position the sparkle exactly in the center of the button initially
+    sparkle.style.left = '50%';
+    sparkle.style.top = '50%';
+
+    // Generate random distances for the explode direction
+    // Random number between -60px and 60px
+    const targetX = (Math.random() - 0.5) * 120 + 'px';
+    const targetY = (Math.random() - 0.5) * 120 + 'px';
+
+    // Pass these random numbers to the CSS animation variables
+    sparkle.style.setProperty('--tx', targetX);
+    sparkle.style.setProperty('--ty', targetY);
+
+    // Randomize sparkle size slightly for a natural look
+    const size = Math.random() * 6 + 6 + 'px'; // 6px to 12px
+    sparkle.style.width = size;
+    sparkle.style.height = size;
+
+    // Append the sparkle into the button
+    button.appendChild(sparkle);
+
+    // Automatically clean up the HTML element after the animation finishes
+    setTimeout(() => {
+      sparkle.remove();
+    }, 600); // Matches the 0.6s CSS animation duration
+  }
+}
+
+// INTEGRATION INTO YOUR EXISTING CODE:
+function setupPressAndHold(buttonId) {
+  const button = document.getElementById(buttonId);
+  let pressTimer = null;
+  let isHoldTriggered = false;
+
+  button.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); 
+    isHoldTriggered = false;
+
+    // ✨ TRIGGER SPARKLES IMMEDIATELY UPON TOUCH ✨
+    createSparkles(button);
+
+    pressTimer = setTimeout(() => {
+      isHoldTriggered = true;
+      onButtonHold(buttonId);
+    }, HOLD_DURATION);
+  });
+
+  button.addEventListener('pointerup', () => {
+    clearTimeout(pressTimer);
+    if (!isHoldTriggered) {
+      onButtonTap(buttonId);
+    }
+  });
+
+  button.addEventListener('pointerleave', () => {
+    clearTimeout(pressTimer);
+  });
+}
+setupPressAndHold("testbtn");
+</script>
 </html>
