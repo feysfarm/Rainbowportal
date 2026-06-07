@@ -1,18 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fantasy Mobile App UI</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/style.css">
+  <style>
+    /* 1. The Wrapper */
+    .phone-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+      border: 3px solid black; /* So you can see the container boundaries */
+    }
+
+    /* 2. The Background */
+    .bg-image {
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    /* 3. The Base Button Style */
+    .custom-btn {
+      position: absolute;
+      z-index: 999; /* Forces it to the very front */
+      
+      /* Image Background Settings */
+      background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-color: rgba(255, 0, 0, 0.4); /* Temporary red tint so you see it if the image fails to load */
+      
+      /* Size */
+      width: 100px;
+      height: 50px;
+      border: none;
+      color: white;
+    }
+
+    /* 4. The Curved Positions */
+    .btn-1 { top: 20%; left: 10%; }
+    .btn-2 { top: 35%; left: 25%; }
+    .btn-3 { top: 50%; left: 35%; }
+  </style>
 </head>
 <body>
 
   <div class="phone-container">
-  <img src="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg" alt="UI Background" class="bg-image"> 
-      <button class="custom-btn btn-1">Button 1</button>
-      <button class="custom-btn btn-2">Button 2</button>
-      <button class="custom-btn btn-3">Button 3</button>
-    </div>
+    <img src="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg" class="bg-image" alt="Background">
+    
+    <button class="custom-btn btn-1">Btn 1</button>
+    <button class="custom-btn btn-2">Btn 2</button>
+    <button class="custom-btn btn-3">Btn 3</button>
+  </div>
+
 </body>
 </html>
