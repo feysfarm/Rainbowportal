@@ -1,79 +1,49 @@
-.app-container {
-    position: relative;
-    width: 100%;
-    max-width: 480px; /* Prevents the app from stretching too wide on desktops */
-    margin: 0 auto; 
-    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg');
-    background-size: cover;
-    background-position: center; 
-    aspect-ratio: 9 / 16;
-}
- 
-.icon-btn {
-    position: absolute;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    /* Use transform so the percentage positioning aligns from the center of the button */
-    transform: translate(-50%, -50%);
-}
- 
-.home-btn {
-    width: 15%; /* Scaled relative to the container width */
-    height: 15%; /* Scaled relative to the container height */
-    top: 30%; /* Distance from the top */
-    left: 25%; /* Distance from the left */
-    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/home-icon.svg');
-}
-
-.settings-btn {
-    width: 12%;
-    height: 12%;
-    top: 75%;
-    left: 80%;
-    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/settings-icon.svg');
-}
-
-.magic-btn {
-    width: 12%;
-    height: 12%; 
-    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
-}
-
-/* The container acts as the anchor point */
-.button-container {
+/* The wrapper that holds everything together */
+.phone-container {
   position: relative;
-  display: inline-block;
-  cursor: pointer;
+  width: 100%;
+  max-width: 450px; /* Limits size on desktop, fits mobile perfectly */
+  margin: 0 auto;
 }
 
-/* Forces the image to behave within the boundaries */
-.button-container img {
+/* Makes sure the background image dictates the container's size */
+.bg-image {
+  width: 100%;
   display: block;
-  width: 200px;  /* Adjust size as needed */
   height: auto;
 }
 
-/* Rip the text out of the normal layout flow and stamp it on top */
-.button-text {
+/* Base styles for all your buttons */
+.custom-btn {
   position: absolute;
+  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-color: transparent; /* Hides default button background */
+  border: none;
   
-  /* Pin the text block to all 4 edges to stretch it perfectly over the image */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  
-  /* Center the text within that invisible stretched box */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Set your button's aspect ratio/size relative to the screen */
+  width: 20%; 
+  height: 8%; 
   
   /* Text styling */
   color: white;
   font-weight: bold;
-  font-size: 18px;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* Helps text stand out against busy images */
+  cursor: pointer;
+}
+
+/* Precise positioning to create a curved/rounded corner layout */
+.btn-1 {
+  top: 30%;
+  left: 15%; /* Further left */
+}
+
+.btn-2 {
+  top: 40%;
+  left: 25%; /* Moving inward to create a curve */
+}
+
+.btn-3 {
+  top: 50%;
+  left: 30%; /* Furthest inward */
 }
