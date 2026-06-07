@@ -35,3 +35,9 @@
     left: 80%;
     background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/settings-icon.svg');
 }
+
+.magic-btn {
+    width: 12%;
+    height: 12%; 
+    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
+}
