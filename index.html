@@ -5,45 +5,177 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AudioKit</title>
-<style>
-:root{--bg:#0e1014;--card:#1a1d24;--accent:#4f8cff;--accent2:#2a2f3a;--txt:#e8eaed;--mut:#8b909a}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt)}
-.wrap{max-width:480px;margin:0 auto;padding:16px}
-h1{font-size:20px;margin:8px 0 14px}
-.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px}
-.title{font-size:17px;font-weight:600;word-break:break-word;min-height:22px}
-.mut{color:var(--mut);font-size:13px;margin-bottom:6px}
-.transport{display:flex;justify-content:center;gap:16px;margin-top:16px}
-button{font:inherit;color:var(--txt);border:none;background:var(--accent2);border-radius:12px;cursor:pointer;padding:0}
-.tbtn{width:56px;height:56px;font-size:20px;border-radius:50%}
-.play{width:72px;height:72px;background:var(--accent);font-size:28px;border-radius:50%}
-.row{display:flex;align-items:center;gap:10px;margin-top:14px}
-.row label{font-size:13px;color:var(--mut);width:52px}
-input[type=range]{flex:1;accent-color:var(--accent)}
-.vval{width:28px;text-align:right}
-.toggle{width:100%;padding:12px;border-radius:12px;font-size:15px}
-.toggle.on{background:var(--accent)}
-.tk{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--accent2);margin-bottom:6px}
-.tk.active{outline:2px solid var(--accent)}
-.tk .nm{flex:1;font-size:14px;word-break:break-word}
-.tk button{background:transparent;color:var(--accent);padding:6px 10px;font-size:13px}
-</style>
+<title>AudioKit</title>
+  <style>
+    :root {
+      --bg: #0e1014;
+      --card: #1a1d24;
+      --accent: #4f8cff;
+      --accent2: #2a2f3a;
+      --txt: #e8eaed;
+      --mut: #8b909a
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--txt)
+    }
+
+    /* FIX: Added relative positioning and z-index so it sits cleanly over the background image */
+    .wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 8px 0 14px
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px
+    }
+
+    .title {
+      font-size: 17px;
+      font-weight: 600;
+      word-break: break-word;
+      min-height: 22px
+    }
+
+    .mut {
+      color: var(--mut);
+      font-size: 13px;
+      margin-bottom: 6px
+    }
+
+    .transport {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px
+    }
+
+    button {
+      font: inherit;
+      color: var(--txt);
+      border: none;
+      background: var(--accent2);
+      border-radius: 12px;
+      cursor: pointer;
+      padding: 0
+    }
+
+    .tbtn {
+      width: 56px;
+      height: 56px;
+      font-size: 20px;
+      border-radius: 50%
+    }
+
+    .play {
+      width: 72px;
+      height: 72px;
+      background: var(--accent);
+      font-size: 28px;
+      border-radius: 50%
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px
+    }
+
+    .row label {
+      font-size: 13px;
+      color: var(--mut);
+      width: 52px
+    }
+
+    input[type=range] {
+      flex: 1;
+      accent-color: var(--accent)
+    }
+
+    .vval {
+      width: 28px;
+      text-align: right
+    }
+
+    .toggle {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 15px
+    }
+
+    .toggle.on {
+      background: var(--accent)
+    }
+
+    .tk {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: var(--accent2);
+      margin-bottom: 6px
+    }
+
+    .tk.active {
+      outline: 2px solid var(--accent)
+    }
+
+    .tk .nm {
+      flex: 1;
+      font-size: 14px;
+      word-break: break-word
+    }
+
+    .tk button {
+      background: transparent;
+      color: var(--accent);
+      padding: 6px 10px;
+      font-size: 13px
+    }
+  </style>
 
   <style>
     /* 1. The Wrapper */
-    .phone-container {
+   .phone-container {
       position: relative;
       width: 100%;
       max-width: 400px;
       margin: 20px auto;
-      border: 3px solid black; /* So you can see the container boundaries */
+      border: 3px solid black;
+      border-radius: 16px; /* Optional: rounds container corners nicely */
+      overflow: hidden;    /* Optional: clips the background to container bounds */
     }
- 
+
+    /* FIX: Made the image absolutely fill the container background layer */
     .bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      display: block;
-      height: auto;
+      height: 100%;
+      object-fit: cover; /* Keeps aspect ratio clean while covering the container */
+      z-index: 1;
     }
 
     .custom-btn {
