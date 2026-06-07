@@ -18,33 +18,49 @@
       height: auto;
     }
 
-    /* 3. The Base Button Style */
     .custom-btn {
-      position: absolute;
-      z-index: 999; /* Forces it to the very front */
-      
-      /* Image Background Settings */
-      background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
-      background-size: 100% 100%;
-      background-repeat: no-repeat; 
-      
-      /* Size */
-      width: 100px;
-      height: 50px;
-      border: none;
-      color: white;
-    }
+  position: absolute;
+  z-index: 999;
+  width: 100px;  /* Match your button size */
+  height: 50px;
+  background: transparent; /* No background color or image here */
+  border: none;
+  padding: 0;   /* Remove default button padding */
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* Removes the blue box flash on Android/iOS Chrome */
+}
+
+/* 2. The Visual Layer (This handles the image and the effects) */
+.btn-visual {
+  width: 100%;
+  height: 100%;
+  background-image: url('button-bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  
+  /* Text centering styling */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  
+  /* Smooth transition for the effect */
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+/* 3. The Interactive Effect */
+/* When the parent button is pressed, ONLY the inner visual layer scales down */
+.custom-btn:active .btn-visual {
+  opacity: 0.85;
+  transform: scale(0.92); /* Shrinks slightly within its transparent bounds */
+}
 
     /* 4. The Curved Positions */
     .btn-1 { top: 20%; left: 10%; }
     .btn-2 { top: 35%; left: 25%; }
-    .btn-3 { top: 50%; left: 35%; }
-        
-    .custom-btn:active {
-      opacity: 0.8;
-      transform: scale(0.95);
-      transition: transform 0.1s ease; /* Smooth click animation */
-    }
+    .btn-3 { top: 50%; left: 35%; } 
   </style>
 </head>
 <body>
@@ -52,7 +68,7 @@
   <div class="phone-container">
     <img src="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg" class="bg-image" alt="Background">
     
-    <button class="custom-btn btn-1">Btn 1</button>
+    <button class="custom-btn btn-1"><div class="btn-visual">LED</div></button>
     <button class="custom-btn btn-2">Btn 2</button>
     <button class="custom-btn btn-3">Btn 3</button>
   </div>
