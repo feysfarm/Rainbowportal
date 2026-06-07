@@ -13,11 +13,11 @@
   <style>
     :root {
       --bg: #0e1014;
-      --card: #1a1d24;
+      --card: rgba(255, 192, 203, 0.25); /* 🌟 UPDATED TO TRANSPARENT PINK */
       --accent: #4f8cff;
-      --accent2: #2a2f3a;
+      --accent2: rgba(255, 255, 255, 0.15); /* 💡 PRO-TIP: Make buttons slightly transparent too! */
       --txt: #e8eaed;
-      --mut: #8b909a
+      --mut: #8b909a;
     }
 
     * {
@@ -46,11 +46,15 @@
     }
 
     .card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px
-    }
+          background: var(--card);
+          border-radius: 14px;
+          padding: 16px;
+          margin-bottom: 14px;
+          
+          /* 🪄 Adds a beautiful frosted blur to the background image behind the card */
+          backdrop-filter: blur(10px); 
+          -webkit-backdrop-filter: blur(10px); /* For Safari support */
+        }
 
     .title {
       font-size: 17px;
