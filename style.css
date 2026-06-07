@@ -41,3 +41,39 @@
     height: 12%; 
     background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
 }
+
+/* The container acts as the anchor point */
+.button-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Forces the image to behave within the boundaries */
+.button-container img {
+  display: block;
+  width: 200px;  /* Adjust size as needed */
+  height: auto;
+}
+
+/* Rip the text out of the normal layout flow and stamp it on top */
+.button-text {
+  position: absolute;
+  
+  /* Pin the text block to all 4 edges to stretch it perfectly over the image */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* Center the text within that invisible stretched box */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Text styling */
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* Helps text stand out against busy images */
+}
