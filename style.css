@@ -1,0 +1,37 @@
+.app-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px; /* Prevents the app from stretching too wide on desktops */
+    margin: 0 auto; 
+    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg');
+    background-size: cover;
+    background-position: center; 
+    aspect-ratio: 9 / 16;
+}
+ 
+.icon-btn {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    /* Use transform so the percentage positioning aligns from the center of the button */
+    transform: translate(-50%, -50%);
+}
+ 
+.home-btn {
+    width: 15%; /* Scaled relative to the container width */
+    height: 15%; /* Scaled relative to the container height */
+    top: 30%; /* Distance from the top */
+    left: 25%; /* Distance from the left */
+    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/home-icon.svg');
+}
+
+.settings-btn {
+    width: 12%;
+    height: 12%;
+    top: 75%;
+    left: 80%;
+    background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/settings-icon.svg');
+}
