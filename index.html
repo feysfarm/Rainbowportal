@@ -26,8 +26,7 @@
       /* Image Background Settings */
       background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
       background-size: 100% 100%;
-      background-repeat: no-repeat;
-      background-color: rgba(255, 0, 0, 0.4); /* Temporary red tint so you see it if the image fails to load */
+      background-repeat: no-repeat; 
       
       /* Size */
       width: 100px;
@@ -40,6 +39,12 @@
     .btn-1 { top: 20%; left: 10%; }
     .btn-2 { top: 35%; left: 25%; }
     .btn-3 { top: 50%; left: 35%; }
+        
+    .custom-btn:active {
+      opacity: 0.8;
+      transform: scale(0.95);
+      transition: transform 0.1s ease; /* Smooth click animation */
+    }
   </style>
 </head>
 <body>
