@@ -126,10 +126,7 @@ function createSparkles(button) {
     // Randomize size (bigger sparkles look brighter)
     const size = Math.random() * 6 + 6 + 'px';
     sparkle.style.width = size;
-    sparkle.style.height = size;
-
-    // 🎨 PICK A BRIGHT COLOR: Grab a random color from our neon palette
-    const randomColor = brightColors[Math.floor(Math.random() * brightColors.length)];
+    sparkle.style.height = size; 
     
     // Inject it into the CSS variable we set up in the style sheet
     sparkle.style.setProperty('--make-glowing', randomColor); // Fallback string just in case
