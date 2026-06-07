@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AudioKit</title>
+<style>
+:root{--bg:#0e1014;--card:#1a1d24;--accent:#4f8cff;--accent2:#2a2f3a;--txt:#e8eaed;--mut:#8b909a}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt)}
+.wrap{max-width:480px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:8px 0 14px}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px}
+.title{font-size:17px;font-weight:600;word-break:break-word;min-height:22px}
+.mut{color:var(--mut);font-size:13px;margin-bottom:6px}
+.transport{display:flex;justify-content:center;gap:16px;margin-top:16px}
+button{font:inherit;color:var(--txt);border:none;background:var(--accent2);border-radius:12px;cursor:pointer;padding:0}
+.tbtn{width:56px;height:56px;font-size:20px;border-radius:50%}
+.play{width:72px;height:72px;background:var(--accent);font-size:28px;border-radius:50%}
+.row{display:flex;align-items:center;gap:10px;margin-top:14px}
+.row label{font-size:13px;color:var(--mut);width:52px}
+input[type=range]{flex:1;accent-color:var(--accent)}
+.vval{width:28px;text-align:right}
+.toggle{width:100%;padding:12px;border-radius:12px;font-size:15px}
+.toggle.on{background:var(--accent)}
+.tk{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--accent2);margin-bottom:6px}
+.tk.active{outline:2px solid var(--accent)}
+.tk .nm{flex:1;font-size:14px;word-break:break-word}
+.tk button{background:transparent;color:var(--accent);padding:6px 10px;font-size:13px}
+</style>
+
   <style>
     /* 1. The Wrapper */
     .phone-container {
@@ -96,6 +125,24 @@
 
   <div class="phone-container">
     <img src="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/background.jpg" class="bg-image" alt="Background">
+    
+    <div class="wrap">
+    <h1>Rainbow land!</h1>
+    <div class="card">
+    <div class="mut">Now playing</div>
+    <div class="title" id="title">-</div>
+    <div class="transport">
+    <button class="tbtn" onclick="api('prev')">&#9198;</button>
+    <button class="play" id="play" onclick="api('playpause')">&#9654;</button>
+    <button class="tbtn" onclick="api('next')">&#9197;</button>
+    </div>
+    <div class="row"><label>Volume</label>
+    <input type="range" id="vol" min="0" max="21" oninput="setVol(this.value)">
+    <span class="vval" id="vval">0</span></div>
+    <button class="toggle" id="stage" onclick="api('stage')">Stage</button>
+    </div>
+    <div class="card"><div class="mut">Library</div><div id="list"></div></div>
+    </div>
     
     <button class="custom-btn btn-1" id="testbtn"><div class="btn-visual">LED</div></button> 
   </div>
