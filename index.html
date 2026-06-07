@@ -21,7 +21,7 @@
   position: absolute;
   z-index: 999;
   width: 100px;  /* Match your button size */
-  height: 50px;
+  height: 25px;
   background: transparent; /* No background color or image here */
   border: none;
   padding: 0;   /* Remove default button padding */
@@ -157,7 +157,7 @@ function setupPressAndHold(buttonId) {
   let isHoldTriggered = false;
 
   button.addEventListener('pointerdown', (e) => {
-    e.preventDefault(); 
+    //e.preventDefault(); 
     isHoldTriggered = false;
 
     // ✨ TRIGGER SPARKLES IMMEDIATELY UPON TOUCH ✨
