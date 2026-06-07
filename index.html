@@ -3,7 +3,6 @@
 
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/apple-touch-icon.png">
-
 <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/icon-192.png">
 <link rel="manifest" href="/manifest.json" crossorigin="anonymous">
@@ -83,20 +82,48 @@
       padding: 0
     }
 
+    /* Base styling for back and forward buttons */
     .tbtn {
       width: 56px;
       height: 56px;
-      font-size: 20px;
-      border-radius: 50%
+      border-radius: 50%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
+    /* Specific custom PNG assignments */
+    .btn-prev {
+      background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/backbtn.png');
+      background-color: transparent; /* Removes fallback color if image asset handles it */
+    }
+
+    .btn-next {
+      background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/forwardbtn.png');
+      background-color: transparent;
+    }
+
+    /* Base styling for the Play/Pause button */
     .play {
       width: 72px;
       height: 72px;
-      background: var(--accent);
-      font-size: 28px;
-      border-radius: 50%
+      border-radius: 50%;
+      background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/playbtn.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: transparent; 
+      transition: transform 0.1s ease;
     }
+
+    /* If your JS toggles a 'paused' class, this switches the image seamlessly */
+    .play.paused {
+      background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/pausebtn.png'); 
+    }
+    .transport button:active {
+      transform: scale(0.95);
+    }
+    
 
     .row {
       display: flex;
@@ -269,9 +296,9 @@
     <div class="mut">Now playing</div>
     <div class="title" id="title">-</div>
     <div class="transport">
-    <button class="tbtn" onclick="api('prev')">&#9198;</button>
-    <button class="play" id="play" onclick="api('playpause')">&#9654;</button>
-    <button class="tbtn" onclick="api('next')">&#9197;</button>
+    <button class="tbtn btn-prev" onclick="api('prev')"></button>
+    <button class="play" id="play" onclick="api('playpause')"></button>
+    <button class="tbtn btn-next" onclick="api('next')"></button>
     </div>
     <div class="row"><label>Volume</label>
     <input type="range" id="vol" min="0" max="21" oninput="setVol(this.value)">
