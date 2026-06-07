@@ -55,12 +55,14 @@
   position: absolute;
   width: 8px;
   height: 8px; 
-  background-color: #ff0077; 
+  background-color: #ffffff; 
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   pointer-events: none;
-  z-index: 1000; 
-  box-shadow: 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ff8c00;
-  
+  z-index: 1000;  
+  box-shadow: 0 0 8px #ffffff, 
+              0 0 12px var(--sparkle-color), 
+              0 0 20px var(--sparkle-color);
+  filter: brightness(1.5);
   /* Hook up the animation */
   animation: explode 0.6s ease-out forwards;
 } 
@@ -94,30 +96,44 @@
 </body>
 <script>
 function createSparkles(button) {
-  const sparkleCount = 10; // Slightly increased for a better rainbow effect!
+  const sparkleCount = 12; // Plenty of particles for a rich effect
+
+  // A palette of ultra-bright, neon colors
+  const brightColors = [
+    '#00ffff', // Neon Cyan
+    '#ff00ff', // Neon Magenta
+    '#00ff00', // Neon Green
+    '#ff3300', // Neon Red/Orange
+    '#ffea00', // Neon Yellow
+    '#ff007f', // Bright Pink
+    '#39ff14'  // Radioactive Green
+  ];
 
   for (let i = 0; i < sparkleCount; i++) {
     const sparkle = document.createElement('span');
     sparkle.classList.add('sparkle');
 
-    // Position in the center of the button
+    // Position center
     sparkle.style.left = '50%';
     sparkle.style.top = '50%';
 
-    // Generate random explosion trajectories
-    const targetX = (Math.random() - 0.5) * 130 + 'px';
-    const targetY = (Math.random() - 0.5) * 130 + 'px';
+    // Explosion trajectories
+    const targetX = (Math.random() - 0.5) * 140 + 'px';
+    const targetY = (Math.random() - 0.5) * 140 + 'px';
     sparkle.style.setProperty('--tx', targetX);
     sparkle.style.setProperty('--ty', targetY);
 
-    // Randomize size
+    // Randomize size (bigger sparkles look brighter)
     const size = Math.random() * 6 + 6 + 'px';
     sparkle.style.width = size;
     sparkle.style.height = size;
 
-    // 🌈 THE COLOR MAGIC: Pick a random degree on the color wheel (0 - 360)
-    const randomHue = Math.floor(Math.random() * 360);
-    sparkle.style.filter = `hue-rotate(${randomHue}deg)`;
+    // 🎨 PICK A BRIGHT COLOR: Grab a random color from our neon palette
+    const randomColor = brightColors[Math.floor(Math.random() * brightColors.length)];
+    
+    // Inject it into the CSS variable we set up in the style sheet
+    sparkle.style.setProperty('--make-glowing', randomColor); // Fallback string just in case
+    sparkle.style.setProperty('--sparkle-color', randomColor);
 
     // Append and clean up
     button.appendChild(sparkle);
@@ -126,7 +142,6 @@ function createSparkles(button) {
     }, 600);
   }
 }
-
 // INTEGRATION INTO YOUR EXISTING CODE:
 function setupPressAndHold(buttonId) {
   const button = document.getElementById(buttonId);
