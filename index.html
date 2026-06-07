@@ -54,18 +54,16 @@
 .sparkle {
   position: absolute;
   width: 8px;
-  height: 8px;
-  background-color: #fff; /* White base */
+  height: 8px; 
+  background-color: #ff0077; 
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  pointer-events: none; /* Crucial: so sparkles don't block user touches */
-  z-index: 1000;
-  
-  /* Give it a magical glow */
+  pointer-events: none;
+  z-index: 1000; 
   box-shadow: 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ff8c00;
   
   /* Hook up the animation */
   animation: explode 0.6s ease-out forwards;
-}
+} 
 
 /* The Burst Animation */
 @keyframes explode {
@@ -96,37 +94,36 @@
 </body>
 <script>
 function createSparkles(button) {
-  const sparkleCount = 8; // Number of sparkles per click
+  const sparkleCount = 10; // Slightly increased for a better rainbow effect!
 
   for (let i = 0; i < sparkleCount; i++) {
     const sparkle = document.createElement('span');
     sparkle.classList.add('sparkle');
 
-    // Position the sparkle exactly in the center of the button initially
+    // Position in the center of the button
     sparkle.style.left = '50%';
     sparkle.style.top = '50%';
 
-    // Generate random distances for the explode direction
-    // Random number between -60px and 60px
-    const targetX = (Math.random() - 0.5) * 120 + 'px';
-    const targetY = (Math.random() - 0.5) * 120 + 'px';
-
-    // Pass these random numbers to the CSS animation variables
+    // Generate random explosion trajectories
+    const targetX = (Math.random() - 0.5) * 130 + 'px';
+    const targetY = (Math.random() - 0.5) * 130 + 'px';
     sparkle.style.setProperty('--tx', targetX);
     sparkle.style.setProperty('--ty', targetY);
 
-    // Randomize sparkle size slightly for a natural look
-    const size = Math.random() * 6 + 6 + 'px'; // 6px to 12px
+    // Randomize size
+    const size = Math.random() * 6 + 6 + 'px';
     sparkle.style.width = size;
     sparkle.style.height = size;
 
-    // Append the sparkle into the button
-    button.appendChild(sparkle);
+    // 🌈 THE COLOR MAGIC: Pick a random degree on the color wheel (0 - 360)
+    const randomHue = Math.floor(Math.random() * 360);
+    sparkle.style.filter = `hue-rotate(${randomHue}deg)`;
 
-    // Automatically clean up the HTML element after the animation finishes
+    // Append and clean up
+    button.appendChild(sparkle);
     setTimeout(() => {
       sparkle.remove();
-    }, 600); // Matches the 0.6s CSS animation duration
+    }, 600);
   }
 }
 
