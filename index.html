@@ -133,6 +133,7 @@ function createSparkles(button) {
     
     // Inject it into the CSS variable we set up in the style sheet
     sparkle.style.setProperty('--make-glowing', randomColor); // Fallback string just in case
+    const randomColor = brightColors[Math.floor(Math.random() * brightColors.length)]; 
     sparkle.style.setProperty('--sparkle-color', randomColor);
 
     // Append and clean up
