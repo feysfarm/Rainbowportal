@@ -1,0 +1,47 @@
+.balloonA {
+  position: absolute;
+  left: 5.1%;
+  top: 0.6%;
+  width: 18%;
+  height: 22%;
+}
+
+.balloonB {
+  position: absolute;
+  left: 27.7%;
+  top: 9.2%;
+  width: 16%;
+  height: 20%;
+}
+
+.balloonC {
+  position: absolute;
+  left: 69.6%;
+  top: 32.6%;
+  width: 17%;
+  height: 21%;
+}
+
+.balloonD {
+  position: absolute;
+  left: 45.2%;
+  top: 18%;
+  width: 15%;
+  height: 19%;
+}
+
+.balloonE {
+  position: absolute;
+  left: 22.5%;
+  top: 45.8%;
+  width: 14%;
+  height: 18%;
+}
+
+.balloonF {
+  position: absolute;
+  left: 48.8%;
+  top: 41.3%;
+  width: 16%;
+  height: 20%;
+}

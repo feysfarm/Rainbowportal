@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rainbowportal — button positioner</title>
+  <link rel="stylesheet" href="positioner.css">
+</head>
+<body>
+  <header class="toolbar">
+    <h1>Button positioner</h1>
+    <p class="hint">Drag to move · drag corner handle to resize · values are % of the background image</p>
+    <div class="toolbar-actions">
+      <label class="file-btn">
+        Add image
+        <input type="file" id="addFile" accept="image/*" hidden>
+      </label>
+      <button type="button" id="btnDuplicate">Duplicate selected</button>
+      <button type="button" id="btnDelete" class="danger">Delete selected</button>
+      <button type="button" id="btnCopy">Copy CSS</button>
+      <button type="button" id="btnCopyJson">Copy JSON</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage-wrap">
+      <div class="stage" id="stage">
+        <img src="background.jpg" alt="Background" class="stage-bg" id="stageBg" draggable="false">
+        <!-- hotspots injected by JS -->
+      </div>
+      <p class="stage-meta" id="stageMeta">Background: loading…</p>
+    </section>
+
+    <aside class="panel">
+      <h2>Elements</h2>
+      <ul class="element-list" id="elementList"></ul>
+
+      <h2>Selected</h2>
+      <div class="coords" id="coordsPanel">
+        <p class="empty">Click an element on the stage</p>
+      </div>
+
+      <div class="output-header">
+        <h2>CSS output</h2>
+        <button type="button" id="btnCopyCss" class="copy-btn">Copy CSS</button>
+      </div>
+      <pre class="output" id="cssOutput"></pre>
+
+      <h2>JSON output</h2>
+      <pre class="output" id="jsonOutput"></pre>
+    </aside>
+  </main>
+
+  <script src="positioner.js"></script>
+</body>
+</html>

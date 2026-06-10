@@ -1,0 +1,423 @@
+/* Rainbowportal interface prototype — mobile-first */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #0a0c10;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viewport {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+/* All % positions in elementpositions.css are relative to this box */
+.scene {
+  position: relative;
+  width: min(100%, 420px);
+  max-width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  touch-action: manipulation;
+}
+
+.scene-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Hotspot buttons — sizing/position from elementpositions.css */
+.balloon-btn {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  overflow: visible;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  transform-origin: center bottom;
+  --glow-color: rgba(255, 230, 255, 0.32);
+  --glow-soft: color-mix(in srgb, var(--glow-color) 28%, transparent);
+  --glow-faint: color-mix(in srgb, var(--glow-color) 10%, transparent);
+  --glow-duration: 2.8s;
+  animation: bob var(--bob-duration, 3.2s) ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
+}
+
+/* Soft halo behind balloon — feathered to fully transparent edges */
+.balloon-btn::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  z-index: 0;
+  width: 105%;
+  height: 82%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 42%,
+    var(--glow-color) 0%,
+    color-mix(in srgb, var(--glow-color) 55%, transparent) 22%,
+    color-mix(in srgb, var(--glow-color) 22%, transparent) 42%,
+    color-mix(in srgb, var(--glow-color) 6%, transparent) 58%,
+    transparent 72%
+  );
+  filter: blur(14px);
+  animation: glow-pulse var(--glow-duration) ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
+}
+
+.balloon-btn img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 72%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  animation: img-glow var(--glow-duration) ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
+}
+
+.balloon-label {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 118%;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(7px, 2.35vw, 11px);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: #fffef8;
+  background: rgba(28, 12, 48, 0.82);
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  z-index: 3;
+  animation: label-glow var(--glow-duration, 2.8s) ease-in-out infinite;
+}
+
+.balloon-btn:active {
+  animation-play-state: paused;
+}
+
+.balloon-btn:active::before,
+.balloon-btn:active img,
+.balloon-btn:active .balloon-label {
+  animation-play-state: paused;
+}
+
+.balloon-btn.tapped {
+  animation: tap-squish 0.35s ease-out;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-1 * var(--bob-amount, 6px)));
+  }
+}
+
+@keyframes tap-squish {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(0.88);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+@keyframes img-glow {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2))
+      drop-shadow(0 0 14px var(--glow-soft))
+      drop-shadow(0 0 28px var(--glow-faint));
+  }
+  50% {
+    filter:
+      drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2))
+      drop-shadow(0 0 20px var(--glow-soft))
+      drop-shadow(0 0 38px var(--glow-faint));
+  }
+}
+
+@keyframes label-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 2px 10px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 0 10px var(--glow-faint);
+  }
+  50% {
+    box-shadow:
+      0 2px 10px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 0 16px var(--glow-soft),
+      0 0 26px var(--glow-faint);
+  }
+}
+
+/* Sparkle burst on tap */
+.sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 20;
+  left: 50%;
+  top: 50%;
+  box-shadow:
+    0 0 10px var(--sparkle-color),
+    0 0 20px var(--sparkle-color);
+  filter: brightness(1.5);
+  animation: sparkle-burst 0.55s ease-out forwards;
+}
+
+.sparkle-inner {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+@keyframes sparkle-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* ── Bottom audio player (over background) ── */
+.player-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 8;
+  padding: 10px 12px 12px;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  background: linear-gradient(
+    to top,
+    rgba(18, 8, 32, 0.92) 0%,
+    rgba(28, 14, 48, 0.78) 55%,
+    rgba(28, 14, 48, 0) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.player-now {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.player-title {
+  margin: 2px 0 10px;
+  font-size: clamp(14px, 3.8vw, 17px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: #fffef8;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.player-btn {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.player-btn:active {
+  transform: scale(0.9);
+  opacity: 0.85;
+}
+
+.player-prev,
+.player-next {
+  width: 44px;
+  height: 44px;
+}
+
+.player-prev {
+  background-image: url('backbtn.png');
+}
+
+.player-next {
+  background-image: url('forwardbtn.png');
+}
+
+.player-play {
+  width: 54px;
+  height: 54px;
+  background-image: url('playbtn.png');
+}
+
+.player-play.is-playing {
+  background-image: url('pausebtn.png');
+}
+
+.player-list-wrap {
+  margin-top: 2px;
+}
+
+.player-list-label {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.player-list-scroll {
+  max-height: 88px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px;
+}
+
+.player-track {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  line-height: 1.25;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.player-track + .player-track {
+  margin-top: 2px;
+}
+
+.player-track.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  outline: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.player-track:active {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .balloon-btn {
+    animation: none;
+  }
+
+  .balloon-btn::before,
+  .balloon-btn img,
+  .balloon-label {
+    animation: none;
+  }
+
+  .balloon-btn img {
+    filter:
+      drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2))
+      drop-shadow(0 0 18px var(--glow-soft))
+      drop-shadow(0 0 30px var(--glow-faint));
+  }
+}

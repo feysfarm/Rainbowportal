@@ -1,0 +1,245 @@
+:root {
+  --bg: #1a1d24;
+  --panel: #252a33;
+  --accent: #7c6cff;
+  --accent-dim: rgba(124, 108, 255, 0.35);
+  --txt: #e8eaed;
+  --mut: #9aa0ab;
+  --danger: #ff5a5f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  min-height: 100vh;
+}
+
+.toolbar {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #333;
+}
+
+.toolbar h1 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.hint {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--mut);
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button, .file-btn {
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: var(--panel);
+  color: var(--txt);
+  cursor: pointer;
+}
+
+button:hover, .file-btn:hover { border-color: var(--accent); }
+
+.file-btn { display: inline-flex; align-items: center; }
+
+button.danger { border-color: #633; color: #ffb4b4; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr min(360px, 38vw);
+  gap: 0;
+  min-height: calc(100vh - 120px);
+}
+
+.stage-wrap {
+  padding: 16px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Stage matches background aspect ratio; all % coords are relative to this box */
+.stage {
+  position: relative;
+  width: min(100%, 420px);
+  max-width: 100%;
+  user-select: none;
+  touch-action: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  border: 2px solid #444;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.stage-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.hotspot {
+  position: absolute;
+  z-index: 2;
+  cursor: grab;
+  outline: 1px dashed rgba(255, 255, 255, 0.35);
+  outline-offset: 0;
+}
+
+.hotspot.selected {
+  outline: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-dim);
+  z-index: 10;
+}
+
+.hotspot:active { cursor: grabbing; }
+
+.hotspot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.resize-handle {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border: 2px solid #fff;
+  border-radius: 3px;
+  cursor: nwse-resize;
+  z-index: 3;
+  display: none;
+}
+
+.hotspot.selected .resize-handle { display: block; }
+
+.stage-meta {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--mut);
+  text-align: center;
+}
+
+.panel {
+  background: var(--panel);
+  border-left: 1px solid #333;
+  padding: 14px 16px;
+  overflow-y: auto;
+}
+
+.panel h2 {
+  margin: 16px 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+
+.panel h2:first-child { margin-top: 0; }
+
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+
+.output-header h2 {
+  margin: 0;
+}
+
+.copy-btn {
+  font-size: 12px;
+  padding: 5px 10px;
+  flex-shrink: 0;
+}
+
+.copy-btn.copied {
+  border-color: #3ad07a;
+  color: #3ad07a;
+}
+
+.element-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.element-list li {
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.element-list li.active {
+  background: var(--accent-dim);
+  outline: 1px solid var(--accent);
+}
+
+.element-list .sub {
+  font-size: 11px;
+  color: var(--mut);
+  margin-top: 2px;
+  font-family: ui-monospace, monospace;
+}
+
+.coords label {
+  display: grid;
+  grid-template-columns: 72px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.coords input[type="number"] {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: var(--bg);
+  color: var(--txt);
+  font: inherit;
+}
+
+.coords .unit { font-size: 12px; color: var(--mut); }
+
+.coords .empty { color: var(--mut); font-size: 13px; }
+
+.output {
+  margin: 0;
+  padding: 10px;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+}
