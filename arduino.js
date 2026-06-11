@@ -124,15 +124,23 @@ function normPlaylist(p) {
 }
 
 async function refreshFiles() {
-  const data = await apiGet('files');
-  if (data.storageTotal) storageTotal = data.storageTotal;
-  mediaFiles = (data.media || []).map(normFile);
-  systemFiles = (data.system || []).map(normFile);
+  try {
+    const data = await apiGet('files');
+    if (data.storageTotal) storageTotal = data.storageTotal;
+    mediaFiles = (data.media || []).map(normFile);
+    systemFiles = (data.system || []).map(normFile);
+  } catch (e) {
+    console.warn('refreshFiles failed', e);
+  }
 }
 
 async function refreshPlaylists() {
-  const data = await apiGet('playlists');
-  playlists = (data.playlists || []).map(normPlaylist);
+  try {
+    const data = await apiGet('playlists');
+    playlists = (data.playlists || []).map(normPlaylist);
+  } catch (e) {
+    console.warn('refreshPlaylists failed', e);
+  }
 }
 
 async function refreshAll() {
@@ -160,7 +168,7 @@ function applyStatus(s) {
   }
 
   renderPlayer();
-  if (!stOverlay.hidden) renderSleepTimerUI();
+  if (isOverlayOpen(stOverlay)) renderSleepTimerUI();
 }
 
 async function pollStatus() {
@@ -216,6 +224,26 @@ function unlockScroll() {
   if (!scrollLockCount) document.body.style.overflow = '';
 }
 
+function showOverlay(el) {
+  if (!el) return;
+  el.classList.add('is-open');
+  el.removeAttribute('hidden');
+  el.setAttribute('aria-hidden', 'false');
+  lockScroll();
+}
+
+function hideOverlay(el) {
+  if (!el) return;
+  el.classList.remove('is-open');
+  el.setAttribute('hidden', '');
+  el.setAttribute('aria-hidden', 'true');
+  unlockScroll();
+}
+
+function isOverlayOpen(el) {
+  return !!(el && el.classList.contains('is-open'));
+}
+
 function showToast(message) {
   let toast = document.getElementById('fmToast');
   if (!toast) {
@@ -232,6 +260,9 @@ function showToast(message) {
 }
 
 function showChoice(message, choices) {
+  if (!confirmOverlay || !confirmMessage || !confirmActions) {
+    return Promise.resolve(choices[0]?.id ?? null);
+  }
   return new Promise((resolve) => {
     confirmMessage.textContent = message;
     confirmActions.innerHTML = '';
@@ -241,16 +272,12 @@ function showChoice(message, choices) {
       btn.className = 'confirm-btn' + (choice.variant ? ` confirm-btn-${choice.variant}` : '');
       btn.textContent = choice.label;
       btn.addEventListener('click', () => {
-        confirmOverlay.hidden = true;
-        confirmOverlay.setAttribute('aria-hidden', 'true');
-        unlockScroll();
+        hideOverlay(confirmOverlay);
         resolve(choice.id);
       });
       confirmActions.appendChild(btn);
     });
-    confirmOverlay.hidden = false;
-    confirmOverlay.setAttribute('aria-hidden', 'false');
-    lockScroll();
+    showOverlay(confirmOverlay);
   });
 }
 
@@ -439,6 +466,7 @@ function formatSleepRemaining(ms) {
 }
 
 function renderSleepTimerUI() {
+  if (!stStatus || !stCancel || !stHours || !stMins || !stPresets) return;
   if (sleepTimer) {
     if (sleepTimer.mode === 'end') {
       stStatus.textContent = 'Timer active — stops when this playlist ends';
@@ -495,30 +523,30 @@ async function clearSleepTimer() {
 }
 
 function openSleepTimer() {
+  if (!stOverlay) {
+    showToast('UI outdated — reflash firmware');
+    return;
+  }
   renderSleepTimerUI();
-  stOverlay.hidden = false;
-  stOverlay.setAttribute('aria-hidden', 'false');
-  lockScroll();
+  showOverlay(stOverlay);
 }
 
 function closeSleepTimer() {
-  stOverlay.hidden = true;
-  stOverlay.setAttribute('aria-hidden', 'true');
-  unlockScroll();
+  hideOverlay(stOverlay);
 }
 
-stClose.addEventListener('click', closeSleepTimer);
-stOverlay.addEventListener('click', (e) => { if (e.target === stOverlay) closeSleepTimer(); });
-stEndPlaylist.addEventListener('click', () => startSleepTimer('end'));
-stStartDuration.addEventListener('click', () => {
+if (stClose) stClose.addEventListener('click', closeSleepTimer);
+if (stOverlay) stOverlay.addEventListener('click', (e) => { if (e.target === stOverlay) closeSleepTimer(); });
+if (stEndPlaylist) stEndPlaylist.addEventListener('click', () => startSleepTimer('end'));
+if (stStartDuration) stStartDuration.addEventListener('click', () => {
   startSleepTimer('duration', stHoursVal * 60 + stMinsVal);
 });
-stCancel.addEventListener('click', clearSleepTimer);
-stHoursUp.addEventListener('click', () => setSleepDuration(stHoursVal + 1, stMinsVal));
-stHoursDown.addEventListener('click', () => setSleepDuration(stHoursVal - 1, stMinsVal));
-stMinsUp.addEventListener('click', () => setSleepDuration(stHoursVal, stMinsVal + 5));
-stMinsDown.addEventListener('click', () => setSleepDuration(stHoursVal, stMinsVal - 5));
-stPresets.addEventListener('click', (e) => {
+if (stCancel) stCancel.addEventListener('click', clearSleepTimer);
+if (stHoursUp) stHoursUp.addEventListener('click', () => setSleepDuration(stHoursVal + 1, stMinsVal));
+if (stHoursDown) stHoursDown.addEventListener('click', () => setSleepDuration(stHoursVal - 1, stMinsVal));
+if (stMinsUp) stMinsUp.addEventListener('click', () => setSleepDuration(stHoursVal, stMinsVal + 5));
+if (stMinsDown) stMinsDown.addEventListener('click', () => setSleepDuration(stHoursVal, stMinsVal - 5));
+if (stPresets) stPresets.addEventListener('click', (e) => {
   const btn = e.target.closest('.st-preset');
   if (!btn) return;
   const mins = Number(btn.dataset.mins);
@@ -719,30 +747,32 @@ async function savePlaylist() {
 }
 
 async function openListManager() {
+  if (!lmOverlay) {
+    showToast('UI outdated — reflash firmware');
+    return;
+  }
+  showOverlay(lmOverlay);
+  showLmBrowse();
+  renderLmBrowse();
   try {
     await refreshAll();
-    showLmBrowse();
     renderLmBrowse();
-    lmOverlay.hidden = false;
-    lmOverlay.setAttribute('aria-hidden', 'false');
-    lockScroll();
+    if (lmEditView && !lmEditView.hidden) renderLmEdit();
   } catch (e) {
     showToast('Could not load playlists');
   }
 }
 
 function closeListManager() {
-  lmOverlay.hidden = true;
-  lmOverlay.setAttribute('aria-hidden', 'true');
+  hideOverlay(lmOverlay);
   showLmBrowse();
-  unlockScroll();
 }
 
-lmClose.addEventListener('click', closeListManager);
-lmBack.addEventListener('click', () => { showLmBrowse(); renderLmBrowse(); });
-lmOverlay.addEventListener('click', (e) => { if (e.target === lmOverlay) closeListManager(); });
-lmNewBtn.addEventListener('click', () => showLmEdit('new'));
-lmSaveBtn.addEventListener('click', savePlaylist);
+if (lmClose) lmClose.addEventListener('click', closeListManager);
+if (lmBack) lmBack.addEventListener('click', () => { showLmBrowse(); renderLmBrowse(); });
+if (lmOverlay) lmOverlay.addEventListener('click', (e) => { if (e.target === lmOverlay) closeListManager(); });
+if (lmNewBtn) lmNewBtn.addEventListener('click', () => showLmEdit('new'));
+if (lmSaveBtn) lmSaveBtn.addEventListener('click', savePlaylist);
 
 /* ── File manager ── */
 
@@ -815,24 +845,25 @@ function setFileManagerTab(tab) {
 }
 
 async function openFileManager() {
+  if (!fmOverlay) {
+    showToast('UI outdated — reflash firmware');
+    return;
+  }
+  showOverlay(fmOverlay);
+  setFileManagerTab('media');
+  renderFileManager();
   try {
     await refreshFiles();
     renderFileManager();
-    setFileManagerTab('media');
-    fmOverlay.hidden = false;
-    fmOverlay.setAttribute('aria-hidden', 'false');
-    lockScroll();
-    fmClose.focus();
   } catch (e) {
     showToast('Could not load files');
   }
+  if (fmClose) fmClose.focus();
 }
 
 function closeFileManager() {
-  fmOverlay.hidden = true;
-  fmOverlay.setAttribute('aria-hidden', 'true');
-  unlockScroll();
-  fmFileInput.value = '';
+  hideOverlay(fmOverlay);
+  if (fmFileInput) fmFileInput.value = '';
 }
 
 async function removeFile(tab, file) {
@@ -877,11 +908,11 @@ async function uploadFiles(fileList) {
   fmFileInput.value = '';
 }
 
-fmClose.addEventListener('click', closeFileManager);
-fmOverlay.addEventListener('click', (e) => { if (e.target === fmOverlay) closeFileManager(); });
-fmTabMedia.addEventListener('click', () => setFileManagerTab('media'));
-fmTabSystem.addEventListener('click', () => setFileManagerTab('system'));
-fmFileInput.addEventListener('change', () => {
+if (fmClose) fmClose.addEventListener('click', closeFileManager);
+if (fmOverlay) fmOverlay.addEventListener('click', (e) => { if (e.target === fmOverlay) closeFileManager(); });
+if (fmTabMedia) fmTabMedia.addEventListener('click', () => setFileManagerTab('media'));
+if (fmTabSystem) fmTabSystem.addEventListener('click', () => setFileManagerTab('system'));
+if (fmFileInput) fmFileInput.addEventListener('change', () => {
   if (fmFileInput.files?.length) uploadFiles(fmFileInput.files);
 });
 
@@ -927,24 +958,24 @@ async function onBalloonTap(btn) {
 }
 
 document.querySelectorAll('.balloon-btn').forEach((btn) => {
-  btn.addEventListener('pointerdown', (e) => {
+  btn.addEventListener('click', (e) => {
     e.preventDefault();
     btn.classList.remove('tapped');
     void btn.offsetWidth;
     btn.classList.add('tapped');
     createSparkles(btn);
+    onBalloonTap(btn);
   });
-  btn.addEventListener('pointerup', () => onBalloonTap(btn));
   btn.addEventListener('animationend', (e) => {
     if (e.animationName === 'tap-squish') btn.classList.remove('tapped');
   });
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape' || !confirmOverlay.hidden) return;
-  if (!fmOverlay.hidden) closeFileManager();
-  else if (!lmOverlay.hidden) closeListManager();
-  else if (!stOverlay.hidden) closeSleepTimer();
+  if (e.key !== 'Escape' || isOverlayOpen(confirmOverlay)) return;
+  if (isOverlayOpen(fmOverlay)) closeFileManager();
+  else if (isOverlayOpen(lmOverlay)) closeListManager();
+  else if (isOverlayOpen(stOverlay)) closeSleepTimer();
 });
 
 (async function boot() {
