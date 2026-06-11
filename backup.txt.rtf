@@ -1,0 +1,85 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2870
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red61\green73\blue78;\red17\green134\blue139;\red255\green255\blue255;
+\red9\green74\blue76;}
+{\*\expandedcolortbl;;\cssrgb\c30588\c35686\c38039;\cssrgb\c0\c59216\c61569;\cssrgb\c100000\c100000\c100000;
+\cssrgb\c0\c36078\c37255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+\cf3 \cb4 \strokec3 static\cf2 \strokec2  \cf3 \strokec3 const\cf2 \strokec2  \cf3 \strokec3 char\cf2 \strokec2  CONTROL_HTML[] PROGMEM = \cf5 \strokec5 R"HTML(<!DOCTYPE html>\cf2 \cb1 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+\cf5 \cb4 \strokec5 <html lang="en"><head><meta charset="utf-8">\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <meta name="viewport" content="width=device-width,initial-scale=1">\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <title>AudioKit</title>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <style>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 :root\{--bg:#0e1014;--card:#1a1d24;--accent:#4f8cff;--accent2:#2a2f3a;--txt:#e8eaed;--mut:#8b909a\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 *\{box-sizing:border-box\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 body\{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt)\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .wrap\{max-width:480px;margin:0 auto;padding:16px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 h1\{font-size:20px;margin:8px 0 14px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .card\{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .title\{font-size:17px;font-weight:600;word-break:break-word;min-height:22px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .mut\{color:var(--mut);font-size:13px;margin-bottom:6px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .transport\{display:flex;justify-content:center;gap:16px;margin-top:16px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 button\{font:inherit;color:var(--txt);border:none;background:var(--accent2);border-radius:12px;cursor:pointer;padding:0\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .tbtn\{width:56px;height:56px;font-size:20px;border-radius:50%\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .play\{width:72px;height:72px;background:var(--accent);font-size:28px;border-radius:50%\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .row\{display:flex;align-items:center;gap:10px;margin-top:14px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .row label\{font-size:13px;color:var(--mut);width:52px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 input[type=range]\{flex:1;accent-color:var(--accent)\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .vval\{width:28px;text-align:right\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .toggle\{width:100%;padding:12px;border-radius:12px;font-size:15px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .toggle.on\{background:var(--accent)\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .tk\{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--accent2);margin-bottom:6px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .tk.active\{outline:2px solid var(--accent)\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .tk .nm\{flex:1;font-size:14px;word-break:break-word\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 .tk button\{background:transparent;color:var(--accent);padding:6px 10px;font-size:13px\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 </style></head><body><div class="wrap">\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <h1>AudioKit</h1>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <div class="card">\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <div class="mut">Now playing</div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <div class="title" id="title">-</div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <div class="transport">\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <button class="tbtn" onclick="api('prev')">&#9198;</button>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <button class="play" id="play" onclick="api('playpause')">&#9654;</button>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <button class="tbtn" onclick="api('next')">&#9197;</button>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 </div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <div class="row"><label>Volume</label>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <input type="range" id="vol" min="0" max="21" oninput="setVol(this.value)">\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <span class="vval" id="vval">0</span></div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <button class="toggle" id="stage" onclick="api('stage')">Stage</button>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 </div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <div class="card"><div class="mut">Library</div><div id="list"></div></div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 </div>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 <script>\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 let st=\{\};\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 function render(s)\{st=s;\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  document.getElementById('title').textContent=s.track?s.track.replace(/^\\//,''):'(none)';\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  document.getElementById('play').textContent=s.playing?'\\u23F8':'\\u25B6';\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  let v=document.getElementById('vol');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  if(document.activeElement!==v)v.value=s.vol;\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  v.max=s.volmax||21;\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  document.getElementById('vval').textContent=s.vol;\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  let sb=document.getElementById('stage');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  sb.textContent='Stage: '+(s.stage?'ON':'OFF');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  sb.className='toggle'+(s.stage?' on':'');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  let L=document.getElementById('list');L.innerHTML='';\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5  (s.tracks||[]).forEach((t,i)=>\{\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5   let d=document.createElement('div');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5   d.className='tk'+(i===s.index?' active':'');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5   d.innerHTML='<button type="button">'+(i===s.index&&s.playing?'\\u23F8':'\\u25B6')+'</button><span class="nm"></span>';\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5   d.querySelector('.nm').textContent=t.replace(/^\\//,'');\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5   d.querySelector('button').onclick=()=>sel(i);\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5   L.appendChild(d);\});\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 function api(a)\{fetch('/api/'+a,\{method:'POST'\}).then(r=>r.json()).then(render).catch(e=>console.error(e));\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 function setVol(x)\{fetch('/api/vol?set='+x,\{method:'POST'\}).then(r=>r.json()).then(render).catch(()=>\{\});\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 function sel(i)\{fetch('/api/select?i='+i,\{method:'POST'\}).then(r=>r.json()).then(render).catch(()=>\{\});\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 function poll()\{fetch('/api/status').then(r=>r.json()).then(render).catch(()=>\{\});\}\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 poll();setInterval(poll,1500);\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 </script></body></html>)HTML"\cf2 \strokec2 ;\cb1 \
+}
