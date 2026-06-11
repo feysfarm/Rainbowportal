@@ -3,7 +3,7 @@
  * Talks to /api/* on the device; CSS/images from jsDelivr.
  * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
-const UI_VERSION = '17';
+const UI_VERSION = '18';
 console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
@@ -921,16 +921,20 @@ async function uploadFiles(fileList) {
   const dest = fmActiveTab === 'media' ? 'media' : 'system';
   let ok = 0;
   for (const file of Array.from(fileList)) {
-    const fd = new FormData();
-    fd.append('file', file, file.name);
+    const name = file.name || 'upload.mp3';
+    const url = `/api/upload?dest=${encodeURIComponent(dest)}&name=${encodeURIComponent(name)}`;
     try {
-      const r = await fetch(`/api/upload?dest=${dest}`, { method: 'POST', body: fd });
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: file,
+      });
       let j = {};
       try { j = await r.json(); } catch (e) { /* ignore */ }
       if (r.ok && j.uploadok) ok += 1;
-      else showToast(j.uploadError || `Upload failed: ${file.name}`);
+      else showToast(j.uploadError || `Upload failed: ${name}`);
     } catch (e) {
-      showToast(`Upload failed: ${file.name}`);
+      showToast(`Upload failed: ${name}`);
     }
   }
   if (ok > 0) {
