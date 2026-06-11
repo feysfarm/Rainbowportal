@@ -3,7 +3,7 @@
  * Talks to /api/* on the device; CSS/images from jsDelivr.
  * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
-const UI_VERSION = '16';
+const UI_VERSION = '17';
 console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
@@ -31,6 +31,8 @@ let lmDraft = { name: '', mediaIds: [] };
 let stHoursVal = 0;
 let stMinsVal = 30;
 let overlayDismissAfter = 0;
+let sourceSelectOpen = false;
+let lastPlaylistKey = '';
 
 const elTitle = document.getElementById('playerTitle');
 const elTime = document.getElementById('playerTime');
@@ -142,6 +144,8 @@ async function refreshPlaylists() {
   try {
     const data = await apiGet('playlists');
     playlists = (data.playlists || []).map(normPlaylist);
+    lastPlaylistKey = '';
+    renderSourceSelect(true);
   } catch (e) {
     console.warn('refreshPlaylists failed', e);
   }
@@ -324,7 +328,18 @@ function getCurrentPath() {
 
 /* ── Player UI ── */
 
-function renderSourceSelect() {
+function playlistKey() {
+  return playlists.map((pl) => `${pl.id}:${pl.name}`).join('|');
+}
+
+function renderSourceSelect(force = false) {
+  const key = playlistKey();
+  if (!force && sourceSelectOpen) return;
+  if (!force && key === lastPlaylistKey && elSource.options.length > 0) {
+    elSource.value = player.sourceId;
+    return;
+  }
+  lastPlaylistKey = key;
   const prev = elSource.value || player.sourceId;
   elSource.innerHTML = '';
   const allOpt = document.createElement('option');
@@ -354,7 +369,7 @@ function renderPlayerTime() {
 
 function renderPlayer() {
   renderSourceSelect();
-  elSource.value = player.sourceId;
+  if (elSource.value !== player.sourceId) elSource.value = player.sourceId;
 
   const path = getCurrentPath();
   const file = mediaById(path);
@@ -441,7 +456,10 @@ async function nextTrack() {
   }
 }
 
+elSource.addEventListener('focus', () => { sourceSelectOpen = true; });
+elSource.addEventListener('blur', () => { sourceSelectOpen = false; });
 elSource.addEventListener('change', async () => {
+  sourceSelectOpen = false;
   try {
     await apiPost(`source?src=${encodeURIComponent(elSource.value)}&shuffle=${player.shuffle ? 1 : 0}`);
     await pollStatus();
@@ -745,7 +763,7 @@ async function savePlaylist() {
     lmNameInput.focus();
     return;
   }
-  const tracks = lmDraft.mediaIds.filter((id) => mediaById(id)).join(',');
+  const tracks = lmDraft.mediaIds.filter((id) => mediaById(id)).join(';');
   const id = lmEditingId === 'new' ? nextPlaylistId() : lmEditingId;
   try {
     await apiPost(`playlists/save?id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&tracks=${encodeURIComponent(tracks)}`);
@@ -907,9 +925,10 @@ async function uploadFiles(fileList) {
     fd.append('file', file, file.name);
     try {
       const r = await fetch(`/api/upload?dest=${dest}`, { method: 'POST', body: fd });
-      const j = await r.json();
-      if (j.uploadok) ok += 1;
-      else showToast(`Skipped ${file.name}`);
+      let j = {};
+      try { j = await r.json(); } catch (e) { /* ignore */ }
+      if (r.ok && j.uploadok) ok += 1;
+      else showToast(j.uploadError || `Upload failed: ${file.name}`);
     } catch (e) {
       showToast(`Upload failed: ${file.name}`);
     }
