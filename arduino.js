@@ -1,7 +1,10 @@
 /**
  * Rainbowportal — ESP32 AudioKit UI
  * Talks to /api/* on the device; CSS/images from jsDelivr.
+ * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
+const UI_VERSION = '16';
+console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
 let mediaFiles = [];
@@ -27,6 +30,7 @@ let lmEditingId = null;
 let lmDraft = { name: '', mediaIds: [] };
 let stHoursVal = 0;
 let stMinsVal = 30;
+let overlayDismissAfter = 0;
 
 const elTitle = document.getElementById('playerTitle');
 const elTime = document.getElementById('playerTime');
@@ -226,18 +230,25 @@ function unlockScroll() {
 
 function showOverlay(el) {
   if (!el) return;
-  el.classList.add('is-open');
+  el.hidden = false;
   el.removeAttribute('hidden');
+  el.classList.add('is-open');
   el.setAttribute('aria-hidden', 'false');
   lockScroll();
+  overlayDismissAfter = Date.now() + 400;
 }
 
 function hideOverlay(el) {
   if (!el) return;
+  el.hidden = true;
   el.classList.remove('is-open');
   el.setAttribute('hidden', '');
   el.setAttribute('aria-hidden', 'true');
   unlockScroll();
+}
+
+function canDismissOverlay() {
+  return Date.now() >= overlayDismissAfter;
 }
 
 function isOverlayOpen(el) {
@@ -536,7 +547,9 @@ function closeSleepTimer() {
 }
 
 if (stClose) stClose.addEventListener('click', closeSleepTimer);
-if (stOverlay) stOverlay.addEventListener('click', (e) => { if (e.target === stOverlay) closeSleepTimer(); });
+if (stOverlay) stOverlay.addEventListener('click', (e) => {
+  if (e.target === stOverlay && canDismissOverlay()) closeSleepTimer();
+});
 if (stEndPlaylist) stEndPlaylist.addEventListener('click', () => startSleepTimer('end'));
 if (stStartDuration) stStartDuration.addEventListener('click', () => {
   startSleepTimer('duration', stHoursVal * 60 + stMinsVal);
@@ -770,7 +783,9 @@ function closeListManager() {
 
 if (lmClose) lmClose.addEventListener('click', closeListManager);
 if (lmBack) lmBack.addEventListener('click', () => { showLmBrowse(); renderLmBrowse(); });
-if (lmOverlay) lmOverlay.addEventListener('click', (e) => { if (e.target === lmOverlay) closeListManager(); });
+if (lmOverlay) lmOverlay.addEventListener('click', (e) => {
+  if (e.target === lmOverlay && canDismissOverlay()) closeListManager();
+});
 if (lmNewBtn) lmNewBtn.addEventListener('click', () => showLmEdit('new'));
 if (lmSaveBtn) lmSaveBtn.addEventListener('click', savePlaylist);
 
@@ -909,7 +924,9 @@ async function uploadFiles(fileList) {
 }
 
 if (fmClose) fmClose.addEventListener('click', closeFileManager);
-if (fmOverlay) fmOverlay.addEventListener('click', (e) => { if (e.target === fmOverlay) closeFileManager(); });
+if (fmOverlay) fmOverlay.addEventListener('click', (e) => {
+  if (e.target === fmOverlay && canDismissOverlay()) closeFileManager();
+});
 if (fmTabMedia) fmTabMedia.addEventListener('click', () => setFileManagerTab('media'));
 if (fmTabSystem) fmTabSystem.addEventListener('click', () => setFileManagerTab('system'));
 if (fmFileInput) fmFileInput.addEventListener('change', () => {
@@ -958,13 +975,19 @@ async function onBalloonTap(btn) {
 }
 
 document.querySelectorAll('.balloon-btn').forEach((btn) => {
-  btn.addEventListener('click', (e) => {
+  btn.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     btn.classList.remove('tapped');
     void btn.offsetWidth;
     btn.classList.add('tapped');
     createSparkles(btn);
+  });
+  btn.addEventListener('pointerup', (e) => {
+    e.preventDefault();
     onBalloonTap(btn);
+  });
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
   });
   btn.addEventListener('animationend', (e) => {
     if (e.animationName === 'tap-squish') btn.classList.remove('tapped');
