@@ -3,7 +3,7 @@
  * Talks to /api/* on the device; CSS/images from jsDelivr.
  * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
-const UI_VERSION = '23';
+const UI_VERSION = '24';
 console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
@@ -936,10 +936,33 @@ function setUploadProgress(visible, pct = 0, text = 'Uploading…') {
   if (fmUploadLabelWrap) fmUploadLabelWrap.classList.toggle('is-disabled', visible);
 }
 
-function uploadOneFile(file, dest) {
+const CRC32_TABLE = (() => {
+  const table = new Uint32Array(256);
+  for (let i = 0; i < 256; i += 1) {
+    let c = i;
+    for (let j = 0; j < 8; j += 1) {
+      c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    }
+    table[i] = c;
+  }
+  return table;
+})();
+
+function crc32OfArrayBuffer(buf) {
+  const bytes = new Uint8Array(buf);
+  let crc = 0xffffffff;
+  for (let i = 0; i < bytes.length; i += 1) {
+    crc = CRC32_TABLE[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+async function uploadOneFile(file, dest) {
   const name = file.name || 'upload.mp3';
   const total = file.size;
-  const url = `/api/upload/${dest}/${total}/${encodeURIComponent(name)}`;
+  const buf = await file.arrayBuffer();
+  const crc = crc32OfArrayBuffer(buf).toString(16).padStart(8, '0').toUpperCase();
+  const url = `/api/upload/${dest}/${total}/${crc}/${encodeURIComponent(name)}`;
 
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
@@ -965,7 +988,7 @@ function uploadOneFile(file, dest) {
     xhr.addEventListener('error', () => resolve({ ok: false, name, error: 'network error' }));
     xhr.addEventListener('abort', () => resolve({ ok: false, name, error: 'cancelled' }));
     setUploadProgress(true, 0, `Uploading ${name}…`);
-    xhr.send(file);
+    xhr.send(buf);
   });
 }
 
