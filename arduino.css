@@ -643,6 +643,39 @@ body {
   border-color: rgba(255, 255, 255, 0.45);
 }
 
+.fm-upload-btn.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.fm-upload-progress {
+  margin-top: 10px;
+}
+
+.fm-upload-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.fm-upload-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #b8a0ff 0%, #ff9fd6 100%);
+  transition: width 0.15s ease-out;
+}
+
+.fm-upload-progress-text {
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  text-align: center;
+}
+
 .fm-hint {
   margin: 8px 0 0;
   font-size: 11px;

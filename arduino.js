@@ -3,7 +3,7 @@
  * Talks to /api/* on the device; CSS/images from jsDelivr.
  * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
-const UI_VERSION = '19';
+const UI_VERSION = '20';
 console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
@@ -58,6 +58,10 @@ const fmStorageFill = document.getElementById('fmStorageFill');
 const fmStorageText = document.getElementById('fmStorageText');
 const fmFileInput = document.getElementById('fmFileInput');
 const fmUploadLabel = document.getElementById('fmUploadLabel');
+const fmUploadLabelWrap = document.getElementById('fmUploadLabelWrap');
+const fmUploadProgress = document.getElementById('fmUploadProgress');
+const fmUploadProgressFill = document.getElementById('fmUploadProgressFill');
+const fmUploadProgressText = document.getElementById('fmUploadProgressText');
 const fmHint = document.getElementById('fmHint');
 
 const lmOverlay = document.getElementById('listManagerOverlay');
@@ -917,31 +921,74 @@ async function removeFile(tab, file) {
   }
 }
 
+function formatUploadPct(loaded, total) {
+  if (!total) return 'Uploading…';
+  const pct = Math.min(100, Math.round((loaded / total) * 100));
+  const mb = (n) => `${(n / (1024 * 1024)).toFixed(1)} MB`;
+  return `${pct}% · ${mb(loaded)} / ${mb(total)}`;
+}
+
+function setUploadProgress(visible, pct = 0, text = 'Uploading…') {
+  if (!fmUploadProgress || !fmUploadProgressFill || !fmUploadProgressText) return;
+  fmUploadProgress.hidden = !visible;
+  fmUploadProgressFill.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+  fmUploadProgressText.textContent = text;
+  if (fmUploadLabelWrap) fmUploadLabelWrap.classList.toggle('is-disabled', visible);
+}
+
+function uploadOneFile(file, dest) {
+  const name = file.name || 'upload.mp3';
+  const url = `/api/upload?dest=${encodeURIComponent(dest)}&name=${encodeURIComponent(name)}`;
+  const fd = new FormData();
+  fd.append('file', file, name);
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        const pct = (e.loaded / e.total) * 100;
+        setUploadProgress(true, pct, formatUploadPct(e.loaded, e.total));
+      } else {
+        setUploadProgress(true, 0, `Uploading ${name}…`);
+      }
+    });
+    xhr.addEventListener('load', () => {
+      let j = {};
+      try { j = JSON.parse(xhr.responseText); } catch (e) { /* ignore */ }
+      resolve({
+        ok: xhr.status >= 200 && xhr.status < 300 && j.uploadok,
+        name,
+        error: j.uploadError || null,
+      });
+    });
+    xhr.addEventListener('error', () => resolve({ ok: false, name, error: 'network error' }));
+    xhr.addEventListener('abort', () => resolve({ ok: false, name, error: 'cancelled' }));
+    setUploadProgress(true, 0, `Uploading ${name}…`);
+    xhr.send(fd);
+  });
+}
+
 async function uploadFiles(fileList) {
   const dest = fmActiveTab === 'media' ? 'media' : 'system';
+  const files = Array.from(fileList);
   let ok = 0;
-  for (const file of Array.from(fileList)) {
-    const name = file.name || 'upload.mp3';
-    const url = `/api/upload?dest=${encodeURIComponent(dest)}&name=${encodeURIComponent(name)}`;
-    const fd = new FormData();
-    fd.append('file', file, name);
-    try {
-      const r = await fetch(url, { method: 'POST', body: fd });
-      let j = {};
-      try { j = await r.json(); } catch (e) { /* ignore */ }
-      if (r.ok && j.uploadok) ok += 1;
-      else showToast(j.uploadError || `Upload failed: ${name}`);
-    } catch (e) {
-      showToast(`Upload failed: ${name}`);
+  for (let i = 0; i < files.length; i += 1) {
+    const file = files[i];
+    if (files.length > 1) {
+      setUploadProgress(true, 0, `File ${i + 1} of ${files.length}: ${file.name}`);
     }
+    const result = await uploadOneFile(file, dest);
+    if (result.ok) ok += 1;
+    else showToast(result.error || `Upload failed: ${result.name}`);
   }
+  setUploadProgress(false);
   if (ok > 0) {
     await refreshAll();
     await pollStatus();
     renderFileManager();
     showToast(ok === 1 ? 'File uploaded' : `${ok} files uploaded`);
   }
-  fmFileInput.value = '';
+  if (fmFileInput) fmFileInput.value = '';
 }
 
 if (fmClose) fmClose.addEventListener('click', closeFileManager);

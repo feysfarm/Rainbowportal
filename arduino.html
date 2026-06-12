@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/elementpositions.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/arduino.css?v=17">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/arduino.css?v=20">
 </head>
 <body>
   <div class="viewport">
@@ -113,10 +113,16 @@
       </div>
 
       <div class="fm-toolbar">
-        <label class="fm-upload-btn">
+        <label class="fm-upload-btn" id="fmUploadLabelWrap">
           <span id="fmUploadLabel">Add audio files</span>
           <input type="file" id="fmFileInput" accept="audio/mpeg,.mp3,audio/*" multiple hidden>
         </label>
+        <div class="fm-upload-progress" id="fmUploadProgress" hidden aria-live="polite">
+          <div class="fm-upload-progress-track" aria-hidden="true">
+            <div class="fm-upload-progress-fill" id="fmUploadProgressFill"></div>
+          </div>
+          <p class="fm-upload-progress-text" id="fmUploadProgressText">Uploading…</p>
+        </div>
         <p class="fm-hint" id="fmHint">MP3 files for playback in the library.</p>
       </div>
 
