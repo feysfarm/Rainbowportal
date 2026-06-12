@@ -3,7 +3,7 @@
  * Talks to /api/* on the device; CSS/images from jsDelivr.
  * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
-const UI_VERSION = '20';
+const UI_VERSION = '21';
 console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
@@ -936,14 +936,28 @@ function setUploadProgress(visible, pct = 0, text = 'Uploading…') {
   if (fmUploadLabelWrap) fmUploadLabelWrap.classList.toggle('is-disabled', visible);
 }
 
-function uploadOneFile(file, dest) {
+async function uploadOneFile(file, dest) {
   const name = file.name || 'upload.mp3';
-  const url = `/api/upload?dest=${encodeURIComponent(dest)}&name=${encodeURIComponent(name)}`;
-  const fd = new FormData();
-  fd.append('file', file, name);
+  const total = file.size;
+  const startUrl = `/api/upload/start?dest=${encodeURIComponent(dest)}&name=${encodeURIComponent(name)}&total=${total}`;
+  try {
+    const startR = await fetch(startUrl, { method: 'POST' });
+    if (!startR.ok) {
+      let err = 'could not start upload';
+      try {
+        const j = await startR.json();
+        if (j.uploadError) err = j.uploadError;
+      } catch (e) { /* ignore */ }
+      return { ok: false, name, error: err };
+    }
+  } catch (e) {
+    return { ok: false, name, error: 'network error' };
+  }
+
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
+    xhr.open('POST', '/api/upload/body');
+    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     xhr.upload.addEventListener('progress', (e) => {
       if (e.lengthComputable) {
         const pct = (e.loaded / e.total) * 100;
@@ -964,7 +978,7 @@ function uploadOneFile(file, dest) {
     xhr.addEventListener('error', () => resolve({ ok: false, name, error: 'network error' }));
     xhr.addEventListener('abort', () => resolve({ ok: false, name, error: 'cancelled' }));
     setUploadProgress(true, 0, `Uploading ${name}…`);
-    xhr.send(fd);
+    xhr.send(file);
   });
 }
 
