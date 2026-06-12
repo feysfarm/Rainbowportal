@@ -3,7 +3,7 @@
  * Talks to /api/* on the device; CSS/images from jsDelivr.
  * Served from the device at /app.js (see CONTROL_HTML in firmware).
  */
-const UI_VERSION = '22';
+const UI_VERSION = '23';
 console.info(`Rainbowportal UI v${UI_VERSION} — file manager, playlists, sleep timer active`);
 
 let storageTotal = 512 * 1024 * 1024;
@@ -939,7 +939,7 @@ function setUploadProgress(visible, pct = 0, text = 'Uploading…') {
 function uploadOneFile(file, dest) {
   const name = file.name || 'upload.mp3';
   const total = file.size;
-  const url = `/api/upload/body?dest=${encodeURIComponent(dest)}&name=${encodeURIComponent(name)}&total=${total}`;
+  const url = `/api/upload/${dest}/${total}/${encodeURIComponent(name)}`;
 
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
