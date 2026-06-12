@@ -16,7 +16,7 @@
 /* Base styles for all your buttons */
 .custom-btn {
   position: absolute;
-  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/button-bg.png');
+  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/Images/button-bg.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-color: transparent; /* Hides default button background */

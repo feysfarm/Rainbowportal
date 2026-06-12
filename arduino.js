@@ -1057,11 +1057,11 @@ async function onBalloonTap(btn) {
     return;
   }
   if (id === 'balloonE') {
-    try { await apiPost('vol?d=1'); await pollStatus(); } catch (e) { showToast('Volume failed'); }
+    try { await apiPost('vol?d=-1'); await pollStatus(); } catch (e) { showToast('Volume failed'); }
     return;
   }
   if (id === 'balloonF') {
-    try { await apiPost('vol?d=-1'); await pollStatus(); } catch (e) { showToast('Volume failed'); }
+    try { await apiPost('vol?d=1'); await pollStatus(); } catch (e) { showToast('Volume failed'); }
     return;
   }
 }

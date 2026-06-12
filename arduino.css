@@ -396,21 +396,21 @@ body {
 }
 
 .player-prev {
-  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/backbtn.png');
+  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/Images/backbtn.png');
 }
 
 .player-next {
-  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/forwardbtn.png');
+  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/Images/forwardbtn.png');
 }
 
 .player-play {
   width: 54px;
   height: 54px;
-  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/playbtn.png');
+  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/Images/playbtn.png');
 }
 
 .player-play.is-playing {
-  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/pausebtn.png');
+  background-image: url('https://cdn.jsdelivr.net/gh/feysfarm/Rainbowportal@main/Images/pausebtn.png');
 }
 
 .player-list-wrap {

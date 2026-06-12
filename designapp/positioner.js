@@ -5,12 +5,12 @@
  */
 
 const DEFAULT_ITEMS = [
-  { id: 'balloonA', src: 'balloonA.png', left: 8,  top: 12, width: 18, height: 22 },
-  { id: 'balloonB', src: 'balloonB.png', left: 28, top: 8,  width: 16, height: 20 },
-  { id: 'balloonC', src: 'balloonC.png', left: 52, top: 15, width: 17, height: 21 },
-  { id: 'balloonD', src: 'balloonD.png', left: 72, top: 10, width: 15, height: 19 },
-  { id: 'balloonE', src: 'balloonE.png', left: 18, top: 45, width: 14, height: 18 },
-  { id: 'balloonF', src: 'balloonF.png', left: 62, top: 42, width: 16, height: 20 },
+  { id: 'balloonA', src: '../Images/balloonA.png', left: 8,  top: 12, width: 18, height: 22 },
+  { id: 'balloonB', src: '../Images/balloonB.png', left: 28, top: 8,  width: 16, height: 20 },
+  { id: 'balloonC', src: '../Images/balloonC.png', left: 52, top: 15, width: 17, height: 21 },
+  { id: 'balloonD', src: '../Images/balloonD.png', left: 72, top: 10, width: 15, height: 19 },
+  { id: 'balloonE', src: '../Images/balloonE.png', left: 18, top: 45, width: 14, height: 18 },
+  { id: 'balloonF', src: '../Images/balloonF.png', left: 62, top: 42, width: 16, height: 20 },
 ];
 
 const stage = document.getElementById('stage');
